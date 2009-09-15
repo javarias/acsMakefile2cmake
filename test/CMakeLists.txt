@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 2.4)
+project(TEST)
+
+SET(CMAKE_MODULE_PATH "../include")
+
+FIND_PACKAGE(ACE)
+INCLUDE_DIRECTORIES(${ACE_INCLUDE_DIR})
+
+ADD_EXECUTABLE(test main.cpp)
+TARGET_LINK_LIBRARIES(test ${ACE_LIBRARY})
