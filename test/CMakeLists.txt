@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 2.4)
-project(TEST)
-
 SET(CMAKE_MODULE_PATH "../include")
-
 INCLUDE(UseTAO)
+
+project(TEST)
 
 FIND_PACKAGE(ACE)
 INCLUDE_DIRECTORIES(${ACE_INCLUDE_DIR})
