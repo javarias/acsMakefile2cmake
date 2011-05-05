@@ -1,16 +1,32 @@
 
 MACRO(TAO_ADD_IDL)
 	FOREACH (_current_FILE ${ARGV})
-		GET_FILENAME_COMPONENT(_tmp_FILE ${_current_FILE} ABSOLUTE)
+		GET_FILENAME_COMPONENT(_tmp_FILE idl/${_current_FILE} ABSOLUTE)
+		GET_FILENAME_COMPONENT(_object_DIR ./object ABSOLUTE)
+		GET_FILENAME_COMPONENT(_lib_DIR ./lib ABSOLUTE)
 		GET_FILENAME_COMPONENT(_basename ${_tmp_FILE} NAME_WE)
-		SET(_output ${${_output}} "${_basename}C.cpp")
+		SET(_output ${${_output}} "${_basename}C.cpp ${_basename}C.h ${_basename}S.cpp ${_basename}S.h")
 		MESSAGE(STATUS ${_tmp_FILE} " " ${_basename})
 		MESSAGE(STATUS ${_output})
-		ADD_CUSTOM_COMMAND(OUTPUT ${_output}
+
+		file(MAKE_DIRECTORY ${_object_DIR})
+
+		ADD_CUSTOM_TARGET(compile_idl ALL)
+
+		ADD_CUSTOM_COMMAND(OUTPUT ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}C.h ${_object_DIR}/${_basename}C.inl ${_object_DIR}/${_basename}S.cpp ${_object_DIR}/${_basename}S.h ${_object_DIR}/${_basename}S.inl
 			COMMAND $ENV{ACE_ROOT}/TAO/TAO_IDL/tao_idl
-			ARGS ${_tmp_FILE}
+			ARGS ${_tmp_FILE} -o ${_object_DIR}
+			DEPENDS ${_tmp_FILE}
 			WORKING_DIRECTORY "."
 		)
+
+		ADD_CUSTOM_COMMAND(
+				TARGET compile_idl
+				DEPENDS ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}C.h ${_object_DIR}/${_basename}C.inl ${_object_DIR}/${_basename}S.cpp ${_object_DIR}/${_basename}S.h ${_object_DIR}/${_basename}S.inl
+		)
+
+		add_library(${_basename}Stubs SHARED ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}S.cpp)
+
 		SET(generated ${_basename}C.cpp ${_basename}S.cpp)
 	ENDFOREACH (_current_FILE)
 ENDMACRO(TAO_ADD_IDL)
