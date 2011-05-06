@@ -1,3 +1,5 @@
+SET (CORE_LIBS ACE TAO TAO_DynamicAny TAO_IORTable TAO_PortableServer)
+SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
 
 MACRO(TAO_ADD_IDL)
 	FOREACH (_current_FILE ${ARGV})
@@ -11,8 +13,6 @@ MACRO(TAO_ADD_IDL)
 
 		file(MAKE_DIRECTORY ${_object_DIR})
 
-		ADD_CUSTOM_TARGET(compile_idl ALL)
-
 		ADD_CUSTOM_COMMAND(OUTPUT ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}C.h ${_object_DIR}/${_basename}C.inl ${_object_DIR}/${_basename}S.cpp ${_object_DIR}/${_basename}S.h ${_object_DIR}/${_basename}S.inl
 			COMMAND $ENV{ACE_ROOT}/TAO/TAO_IDL/tao_idl
 			ARGS ${_tmp_FILE} -o ${_object_DIR}
@@ -20,12 +20,8 @@ MACRO(TAO_ADD_IDL)
 			WORKING_DIRECTORY "."
 		)
 
-		ADD_CUSTOM_COMMAND(
-				TARGET compile_idl
-				DEPENDS ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}C.h ${_object_DIR}/${_basename}C.inl ${_object_DIR}/${_basename}S.cpp ${_object_DIR}/${_basename}S.h ${_object_DIR}/${_basename}S.inl
-		)
-
 		add_library(${_basename}Stubs SHARED ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}S.cpp)
+		target_link_libraries(${_basename}Stubs ${CORE_LIBS})
 
 		SET(generated ${_basename}C.cpp ${_basename}S.cpp)
 	ENDFOREACH (_current_FILE)
