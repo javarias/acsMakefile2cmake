@@ -1,5 +1,6 @@
 SET (CORE_LIBS ACE TAO TAO_DynamicAny TAO_IORTable TAO_PortableServer)
 
+#TODO: It's necessary to add dependency resolution for IDLs file
 MACRO(TAO_ADD_IDL)
 	FOREACH (_current_FILE ${ARGV})
 		GET_FILENAME_COMPONENT(_tmp_FILE idl/${_current_FILE} ABSOLUTE)
