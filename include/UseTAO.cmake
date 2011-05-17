@@ -12,7 +12,7 @@ MACRO(TAO_ADD_IDL)
 #		MESSAGE(STATUS ${_output})
 
 		file(MAKE_DIRECTORY ${_object_DIR})
-		file(MAKE_DIRECTORY ${_object_DIR})
+		file(MAKE_DIRECTORY ${_lib_DIR})
 
 		ADD_CUSTOM_COMMAND(OUTPUT ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}C.h ${_object_DIR}/${_basename}C.inl ${_object_DIR}/${_basename}S.cpp ${_object_DIR}/${_basename}S.h ${_object_DIR}/${_basename}S.inl
 			COMMAND $ENV{ACE_ROOT}/TAO/TAO_IDL/tao_idl
