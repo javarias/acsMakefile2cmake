@@ -7,22 +7,21 @@ MACRO(TAO_ADD_IDL)
 		GET_FILENAME_COMPONENT(_object_DIR ./object ABSOLUTE)
 		GET_FILENAME_COMPONENT(_lib_DIR ./lib ABSOLUTE)
 		GET_FILENAME_COMPONENT(_basename ${_tmp_FILE} NAME_WE)
-		SET(_output ${${_output}} "${_basename}C.cpp ${_basename}C.h ${_basename}S.cpp ${_basename}S.h")
-		MESSAGE(STATUS ${_tmp_FILE} " " ${_basename})
-		MESSAGE(STATUS ${_output})
+#		SET(_output ${${_output}} "${_basename}C.cpp ${_basename}C.h ${_basename}S.cpp ${_basename}S.h")
+#		MESSAGE(STATUS ${_tmp_FILE} " " ${_basename})
+#		MESSAGE(STATUS ${_output})
 
+		file(MAKE_DIRECTORY ${_object_DIR})
 		file(MAKE_DIRECTORY ${_object_DIR})
 
 		ADD_CUSTOM_COMMAND(OUTPUT ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}C.h ${_object_DIR}/${_basename}C.inl ${_object_DIR}/${_basename}S.cpp ${_object_DIR}/${_basename}S.h ${_object_DIR}/${_basename}S.inl
 			COMMAND $ENV{ACE_ROOT}/TAO/TAO_IDL/tao_idl
 			ARGS ${_tmp_FILE} -o ${_object_DIR}
 			DEPENDS ${_tmp_FILE}
-			WORKING_DIRECTORY "."
 		)
 
 		add_library(${_basename}Stubs SHARED ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}S.cpp)
 		target_link_libraries(${_basename}Stubs ${CORE_LIBS})
 
-		SET(generated ${_basename}C.cpp ${_basename}S.cpp)
 	ENDFOREACH (_current_FILE)
 ENDMACRO(TAO_ADD_IDL)
