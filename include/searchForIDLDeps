@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ ! -f $1 ] || [ -z $1 ]; then
+	exit 1;
+fi 
+
 DEPS=$(cpp -MM $IDL_PATH $1 | cut -d':' -f2 | tr \\ ' ')
 
 unset SYS_DEPS; 
