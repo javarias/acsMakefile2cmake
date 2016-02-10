@@ -1,3 +1,5 @@
+#include <baci.idl>
+
 module example{
         struct TimeOfDay{
                 short hour;

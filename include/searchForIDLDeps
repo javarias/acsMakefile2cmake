@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ ! -f $1 ] || [ -z $1 ]; then
+	exit 1;
+fi 
+
+DEPS=$(cpp -MM $IDL_PATH $1 | cut -d':' -f2 | tr \\ ' ')
+
+unset SYS_DEPS; 
+for dep in $DEPS; do 
+	if [[ $dep == *ACE_wrappers* ]]; then 
+		continue
+	 else 
+		SYS_DEPS="$dep $SYS_DEPS"
+	 fi
+done
+
+echo $SYS_DEPS
