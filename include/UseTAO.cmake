@@ -1,4 +1,4 @@
-SET (CORE_LIBS ACE TAO TAO_DynamicAny TAO_IORTable TAO_PortableServer)
+list (APPEND CORE_LIBS ACE TAO TAO_DynamicAny TAO_IORTable TAO_PortableServer)
 
 #TODO: It's necessary to add dependency resolution for IDLs file
 MACRO(TAO_ADD_IDL)
@@ -40,19 +40,18 @@ MACRO(TAO_ADD_IDL)
 		GET_FILENAME_COMPONENT(_lib_DIR ./lib ABSOLUTE)
 		GET_FILENAME_COMPONENT(_basename ${_tmp_FILE} NAME_WE)
 		
-		MESSAGE(STATUS "searchForIDLDeps ${_tmp_FILE}")
 		execute_process (COMMAND searchForIDLDeps ${_tmp_FILE}
 				OUTPUT_VARIABLE _idl_DEPS 
 				RESULT_VARIABLE _idl_deps_res)
-		MESSAGE(STATUS "${_idl_deps_res} ${_idl_DEPS}")
 		
 		string(REPLACE " " ";" _idl_dep_split ${_idl_DEPS})
 		FOREACH (_idl_dep ${_idl_dep_split})
-			MESSAGE(STATUS ${_idl_dep})
 			GET_FILENAME_COMPONENT(_idl_dep_basename ${_idl_dep} NAME_WE)
 			list(APPEND DEP_LIBS "${_idl_dep_basename}Stubs")
 			list(APPEND DEP_IDLS "${_idl_dep}")
 		ENDFOREACH (_idl_dep)
+	
+		list(APPEND DEP_LIBS ${CORE_LIBS})
 
 		string(REPLACE " " ";" _idl_dir_split $ENV{IDL_PATH})
 
@@ -68,7 +67,8 @@ MACRO(TAO_ADD_IDL)
 		include_directories(${INCLUDE_DIRS})
 		add_library(${_basename}Stubs SHARED ${_object_DIR}/${_basename}C.cpp ${_object_DIR}/${_basename}S.cpp)
 		link_directories(${LIBRARY_DIRS})
-		target_link_libraries(${_basename}Stubs ${CORE_LIBS} ${DEP_LIBS})
+		MESSAGE(STATUS ${LIBRARY_DIRS})
+		target_link_libraries(${_basename}Stubs debug ${DEP_LIBS})
 
 	ENDFOREACH (_current_FILE)
 ENDMACRO(TAO_ADD_IDL)
